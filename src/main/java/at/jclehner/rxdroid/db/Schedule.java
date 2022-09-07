@@ -79,6 +79,7 @@ public final class Schedule extends Entry
 	public static final int REPEAT_EVERY_6_8_12_OR_24_HOURS = 3;
 	public static final int REPEAT_WEEKDAYS = 4;
 	public static final int REPEAT_DAILY_WITH_PAUSE = 5;
+	public static final int REPEAT_DAILY_WITH_X_DAY_PAUSE = 6;
 
 	private static final int MASK_REPEAT_ARG_PAUSE = 0xffff;
 	private static final int MASK_REPEAT_ARG_CYCLE_LENGTH = 0xffff0000;
@@ -320,6 +321,11 @@ public final class Schedule extends Entry
 				final long cycleLength = (repeatArg & MASK_REPEAT_ARG_CYCLE_LENGTH) >> 16;
 				return DateTime.diffDays(date, begin) % cycleLength < (cycleLength - pauseDays);
 
+			case REPEAT_DAILY_WITH_X_DAY_PAUSE:
+				final long pauseDays = repeatArg & MASK_REPEAT_ARG_PAUSE;
+				final long cycleLength = (repeatArg & MASK_REPEAT_ARG_CYCLE_LENGTH) >> 16;
+				return DateTime.diffDays(date, begin) % cycleLength < (cycleLength - pauseDays);
+				
 			default:
 				throw new Exceptions.UnexpectedValueInSwitch(repeatMode);
 		}
